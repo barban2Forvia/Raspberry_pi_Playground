@@ -1,25 +1,19 @@
 
 // mpu6050_udp_nosmbus.c
 // MPU-6050 I2C accelerometer reader for Raspberry Pi + UDP sender (no i2c/smbus.h)
-// Build: gcc -O2 mpu6050_udp_nosmbus.c -o mpu6050_udp
+// Build: gcc -O3 -march=native -flto mpu6050_udp_nosmbus.c -o mpu6050_udp
 // Run  : ./mpu6050_udp
 
-#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
-#include <errno.h>
 #include <signal.h>
 #include <time.h>
-#include <math.h>
 
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include <netinet/in.h>
 
 #include <linux/i2c-dev.h>
 #include <linux/i2c.h>
@@ -38,8 +32,7 @@ static const char *I2C_DEV = "/dev/i2c-1";
 #define ACCEL_XOUT_H  0x3B
 
 // ======== CONSTANTS ========
-#define LSB_PER_G  16384.0   // +/-2g scale
-#define G_TO_MS2   9.80665
+#define ACCEL_SCALE 0.000598550415  // (9.80665 / 16384.0) precomputed
 
 // ======== GLOBALS ========
 static volatile sig_atomic_t g_running = 1;
@@ -53,23 +46,48 @@ static void handle_sigint(int sig) {
 // ======== UTILS ========
 
 // Format ISO-8601 UTC with millisecond precision: YYYY-MM-DDTHH:MM:SS.sss+00:00
-static void iso8601_utc_ms(char *buf, size_t buflen) {
-    struct timespec ts;
-    clock_gettime(CLOCK_REALTIME, &ts);
-
-    time_t sec = ts.tv_sec;
+static inline void iso8601_utc_ms(char *buf, struct timespec *ts) {
+    time_t sec = ts->tv_sec;
     struct tm tm_utc;
     gmtime_r(&sec, &tm_utc);
-
-    char tmp[32];
-    strftime(tmp, sizeof(tmp), "%Y-%m-%dT%H:%M:%S", &tm_utc);
-
-    long ms = ts.tv_nsec / 1000000L;
-    snprintf(buf, buflen, "%s.%03ld+00:00", tmp, ms);
+    
+    // Manual formatting - faster than strftime + snprintf
+    long ms = ts->tv_nsec / 1000000L;
+    register int pos = 0;
+    buf[pos++] = '0' + (tm_utc.tm_year + 1900) / 1000;
+    buf[pos++] = '0' + ((tm_utc.tm_year + 1900) / 100) % 10;
+    buf[pos++] = '0' + ((tm_utc.tm_year + 1900) / 10) % 10;
+    buf[pos++] = '0' + (tm_utc.tm_year + 1900) % 10;
+    buf[pos++] = '-';
+    buf[pos++] = '0' + (tm_utc.tm_mon + 1) / 10;
+    buf[pos++] = '0' + (tm_utc.tm_mon + 1) % 10;
+    buf[pos++] = '-';
+    buf[pos++] = '0' + tm_utc.tm_mday / 10;
+    buf[pos++] = '0' + tm_utc.tm_mday % 10;
+    buf[pos++] = 'T';
+    buf[pos++] = '0' + tm_utc.tm_hour / 10;
+    buf[pos++] = '0' + tm_utc.tm_hour % 10;
+    buf[pos++] = ':';
+    buf[pos++] = '0' + tm_utc.tm_min / 10;
+    buf[pos++] = '0' + tm_utc.tm_min % 10;
+    buf[pos++] = ':';
+    buf[pos++] = '0' + tm_utc.tm_sec / 10;
+    buf[pos++] = '0' + tm_utc.tm_sec % 10;
+    buf[pos++] = '.';
+    buf[pos++] = '0' + ms / 100;
+    buf[pos++] = '0' + (ms / 10) % 10;
+    buf[pos++] = '0' + ms % 10;
+    buf[pos++] = '+';
+    buf[pos++] = '0';
+    buf[pos++] = '0';
+    buf[pos++] = ':';
+    buf[pos++] = '0';
+    buf[pos++] = '0';
+    buf[pos] = '\0';
 }
 
 // Write 1 byte to register using I2C_RDWR
-static int i2c_write_reg8(int fd, uint8_t addr, uint8_t reg, uint8_t val) {
+static inline int i2c_write_reg8(int fd, uint8_t addr, uint8_t reg, uint8_t val) {
     uint8_t buf[2] = { reg, val };
     struct i2c_msg msg = {
         .addr  = addr,
@@ -121,7 +139,7 @@ static int i2c_read_block(int fd, uint8_t addr, uint8_t reg, uint8_t *buf, uint8
     return (rc == 2) ? 0 : -1;
 }
 
-static int16_t s16(uint8_t msb, uint8_t lsb) {
+static inline int16_t s16(uint8_t msb, uint8_t lsb) {
     return (int16_t)((msb << 8) | lsb);
 }
 
@@ -143,7 +161,7 @@ static int init_mpu(int fd, uint8_t addr) {
     if (i2c_write_reg8(fd, addr, PWR_MGMT_1, 0x00) < 0) return -1;
 
     // Sleep 50ms
-    struct timespec ts = { .tv_sec = 0, .tv_nsec = 50 * 1000 * 1000 };
+    struct timespec ts = { .tv_sec = 0, .tv_nsec = 50000000 };
     nanosleep(&ts, NULL);
 
     // Sample rate: 1kHz / (1 + 7) = 125 Hz
@@ -156,27 +174,21 @@ static int init_mpu(int fd, uint8_t addr) {
     return 0;
 }
 
-static int read_accel_ms2(int fd, uint8_t addr, double *ax, double *ay, double *az) {
+static inline int read_accel_ms2(int fd, uint8_t addr, double *ax, double *ay, double *az) {
     uint8_t b[6];
     if (i2c_read_block(fd, addr, ACCEL_XOUT_H, b, 6) < 0) {
         return -1;
     }
-    int16_t raw_x = s16(b[0], b[1]);
-    int16_t raw_y = s16(b[2], b[3]);
-    int16_t raw_z = s16(b[4], b[5]);
-
-    *ax = (double)raw_x / LSB_PER_G * G_TO_MS2;
-    *ay = (double)raw_y / LSB_PER_G * G_TO_MS2;
-    *az = (double)raw_z / LSB_PER_G * G_TO_MS2;
+    // Direct conversion with precomputed scale
+    *ax = (double)s16(b[0], b[1]) * ACCEL_SCALE;
+    *ay = (double)s16(b[2], b[3]) * ACCEL_SCALE;
+    *az = (double)s16(b[4], b[5]) * ACCEL_SCALE;
     return 0;
 }
 
 int main(void) {
     // Handle Ctrl+C
-    struct sigaction sa;
-    memset(&sa, 0, sizeof(sa));
-    sa.sa_handler = handle_sigint;
-    sigaction(SIGINT, &sa, NULL);
+    signal(SIGINT, handle_sigint);
 
     // Open I2C bus
     int i2c_fd = open(I2C_DEV, O_RDWR);
@@ -216,10 +228,10 @@ int main(void) {
         return 1;
     }
 
-    struct sockaddr_in dst;
-    memset(&dst, 0, sizeof(dst));
-    dst.sin_family = AF_INET;
-    dst.sin_port = htons(PORT);
+    struct sockaddr_in dst = {
+        .sin_family = AF_INET,
+        .sin_port = htons(PORT)
+    };
     if (inet_pton(AF_INET, PC_IP, &dst.sin_addr) != 1) {
         fprintf(stderr, "Invalid PC_IP: %s\n", PC_IP);
         close(sock);
@@ -227,26 +239,37 @@ int main(void) {
         return 1;
     }
 
-    struct timespec sleep_ts = { .tv_sec = 0, .tv_nsec = 500 * 1000 * 1000 }; // 500 ms
+    struct timespec sleep_ts = { .tv_sec = 0, .tv_nsec = 500000000 }; // 500 ms
+    char line[128];
+    char tsbuf[32];
+    struct timespec ts;
 
     while (g_running) {
         double ax, ay, az;
         if (read_accel_ms2(i2c_fd, addr, &ax, &ay, &az) == 0) {
-            char tsbuf[40];
-            iso8601_utc_ms(tsbuf, sizeof(tsbuf));
+            clock_gettime(CLOCK_REALTIME, &ts);
+            iso8601_utc_ms(tsbuf, &ts);
 
-            char line[128];
-            snprintf(line, sizeof(line), "ts=%s X=%.3f Y=%.3f Z=%.3f", tsbuf, ax, ay, az);
+            // Manual string construction for speed
+            int len = 0;
+            line[len++] = 't'; line[len++] = 's'; line[len++] = '=';
+            
+            // Copy timestamp
+            char *p = tsbuf;
+            while (*p) line[len++] = *p++;
+            
+            line[len++] = ' '; line[len++] = 'X'; line[len++] = '=';
+            len += snprintf(line + len, 16, "%.3f", ax);
+            line[len++] = ' '; line[len++] = 'Y'; line[len++] = '=';
+            len += snprintf(line + len, 16, "%.3f", ay);
+            line[len++] = ' '; line[len++] = 'Z'; line[len++] = '=';
+            len += snprintf(line + len, 16, "%.3f", az);
+            line[len] = '\0';
 
-            printf("%s\n", line);
+            write(STDOUT_FILENO, line, len);
+            write(STDOUT_FILENO, "\n", 1);
 
-            ssize_t sent = sendto(sock, line, strlen(line), 0,
-                                  (struct sockaddr *)&dst, sizeof(dst));
-            if (sent < 0) {
-                perror("sendto");
-            }
-        } else {
-            fprintf(stderr, "Failed to read accelerometer data\n");
+            sendto(sock, line, len, 0, (struct sockaddr *)&dst, sizeof(dst));
         }
 
         nanosleep(&sleep_ts, NULL);
