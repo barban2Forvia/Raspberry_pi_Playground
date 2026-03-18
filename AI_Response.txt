@@ -1,0 +1,42 @@
+Root Cause
+All 7 failed tasks share the same error: BitBake 2.8.0 (Scarthgap/Poky 5.0.x) attempts to use Linux user namespaces to sandbox network access per-task (via bb.utils.disable_network), but the system denies writing to /proc/self/uid_map.
+
+This typically happens when:
+
+Building inside a Docker/LXC container without user namespace privileges
+Host kernel has kernel.unprivileged_userns_clone = 0
+Running as an unprivileged user on a hardened system
+Solutions
+Option 1 — Enable unprivileged user namespaces (host system fix)
+On the Linux host (or inside a privileged container):
+
+# Check current value (0 = disabled)
+cat /proc/sys/kernel/unprivileged_userns_clone
+
+# Enable temporarily
+sudo sysctl -w kernel.unprivileged_userns_clone=1
+
+# Make permanent across reboots
+echo 'kernel.unprivileged_userns_clone=1' | sudo tee /etc/sysctl.d/99-yocto-userns.conf
+sudo sysctl --system
+
+Option 2 — Docker container fix
+If building inside Docker, re-run the container with either:
+# Option A: unconfined seccomp (less invasive)
+docker run --security-opt seccomp=unconfined ...
+
+# Option B: fully privileged (use only in trusted/dev environments)
+docker run --privileged ...
+
+Option 3 — BitBake configuration workaround
+If you cannot modify the system/container, add to your conf/local.conf:
+# Disable per-task network isolation (requires user namespaces unavailable here)
+BB_NONETWORK = "1"
+
+
+Warning: BB_NONETWORK = "1" also blocks all fetching/downloading during the build. Only use this if your DL_DIR / sstate-cache is fully populated, or if all sources are already mirrored locally. Alternatively, pre-populate downloads first with BB_NONETWORK unset, then set it for the actual compilation runs.
+
+Recommended path
+Given your build environment (user testrdcr, non-root), Option 1 is the cleanest fix. If you are in a CI/Docker environment and cannot touch the host kernel, use Option 2 at the container launch level rather than Option 3, to preserve network fetching capability during the build.
+
+Claude Sonnet 4.6
