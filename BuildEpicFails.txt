@@ -1,0 +1,258 @@
+Read configuration from autolinux.config
+
+Choose an Image to build
+  1.telechips-ivi-image-minimal
+  2.telechips-ivi-image-multimedia
+  3.telechips-ivi-image
+  4.automotive-linux-platform-image
+Choose Image (1-4): 4
+Enabled with-subcore, The autolinux script builds Sub-core Image automatically in background
+Loading cache: 100% |############################################| Time: 0:00:00
+Loaded 3553 entries from dependency cache.
+ERROR: PermissionError: [Errno 1] Operation not permitted###################################################################################################################################################################################             | ETA:  0:00:00
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (/home/testrdcr/build-autolinux/poky/meta/recipes-devtools/desktop-file-utils/desktop-file-utils_0.27.bb:do_write_config) failed with exit code '1'
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (/home/testrdcr/build-autolinux/poky/meta/recipes-graphics/drm/libdrm_2.4.120.bb:do_write_config) failed with exit code '1'
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (/home/testrdcr/build-autolinux/poky/meta/recipes-graphics/xorg-lib/libpciaccess_0.18.bb:do_write_config) failed with exit code '1'
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (/home/testrdcr/build-autolinux/poky/meta/recipes-core/glib-2.0/glib-2.0_2.78.6.bb:do_write_config) failed with exit code '1'
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (/home/testrdcr/build-autolinux/poky/meta/recipes-core/systemd/systemd_255.4.bb:do_write_config) failed with exit code '1'
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (/home/testrdcr/build-autolinux/poky/meta/recipes-core/systemd/systemd_255.4.bb:do_warn_musl) failed with exit code '1'
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (virtual:native:/home/testrdcr/build-autolinux/poky/meta/recipes-core/glib-2.0/glib-2.0_2.78.6.bb:do_write_config) failed with exit code '1'
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (virtual:native:/home/testrdcr/build-autolinux/poky/meta/recipes-support/shared-mime-info/shared-mime-info_2.4.bb:do_write_config) failed with exit code '1'
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (/home/testrdcr/build-autolinux/poky/meta/recipes-support/shared-mime-info/shared-mime-info_2.4.bb:do_write_config) failed with exit code '1'
+Parsing recipes: 100% |##################################################################################################################################################################################################################################| Time: 0:00:19
+Parsing of 2220 .bb files complete (2185 cached, 35 parsed). 3587 targets, 607 skipped, 1 masked, 0 errors.
+WARNING: No recipes in default available for:
+  /home/testrdcr/build-autolinux/poky/../layers/meta-telechips/meta-core/recipes-connectivity/nanomsg/nng_1.5.2.bbappend
+  /home/testrdcr/build-autolinux/poky/../layers/meta-telechips/meta-core/recipes-devtools/qemu/qemu_8.2.1.bbappend
+  /home/testrdcr/build-autolinux/poky/../layers/meta-telechips/meta-security/recipes-bsp/u-boot/u-boot-tools_2022.01.bbappend
+NOTE: Resolving any missing task queue dependencies
+
+Build Configuration:
+BB_VERSION           = "2.8.0"
+BUILD_SYS            = "x86_64-linux"
+NATIVELSBSTRING      = "universal"
+TARGET_SYS           = "aarch64-telechips-linux"
+MACHINE              = "tcc8053-main"
+DISTRO               = "poky-telechips-systemd"
+DISTRO_VERSION       = "5.0.4"
+TUNE_FEATURES        = "aarch64 crc cortexa72"
+TARGET_FPU           = ""
+LINUX_VERSION        = "6.1.85"
+KBUILD_DEFCONFIG     = "tcc805x_ivi_defconfig"
+IMAGE_FEATURES       = " debug-tweaks read-only-rootfs"
+GCCVERSION           = "13.%"
+GLIBCVERSION         = "2.39%"
+INVITE_PLATFORM      = " ivi-extension with-subcore hud-display multimedia micom fw-update genivi"
+meta                 
+meta-poky            = "HEAD:2034fc38eb4e63984d9bd6b260aa1bf95ce562e4"
+meta-oe              = "HEAD:2e3126c9c16bb3df0560f6b3896d01539a3bfad7"
+meta-flutter         
+meta-flutter-apps    = "HEAD:45e9a2e59f7422ab45fa094aba3bf0c342ec727f"
+meta-telechips-bsp   = "HEAD:f277cf714b85848a1822040a1eb7acc39b46d1a3"
+meta-core            
+meta-micom           = "HEAD:8af535ea87790e1245c726fad6afaa5d4cf35aa3"
+meta-security        = "HEAD:cdedecd917a39a8a49d477eb23daf4965f34c4f8"
+meta-update          = "HEAD:6f05d7f69f87a5519cec31bab9b000925f947771"
+meta-ivi             
+meta-genivi          = "HEAD:14485ab3bb74db959a1121adf0c2542400931a5a"
+
+Sstate summary: Wanted 3234 Local 0 Mirrors 0 Missed 3234 Current 16 (0% match, 0% complete)######################################################################################################################################                       | ETA:  0:00:00
+Initialising tasks: 100% |###############################################################################################################################################################################################################################| Time: 0:00:03
+NOTE: Executing Tasks
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (/home/testrdcr/build-autolinux/poky/meta/recipes-core/glib-2.0/glib-2.0_2.78.6.bb:do_write_config) failed with exit code '1'
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (/home/testrdcr/build-autolinux/poky/meta/recipes-gnome/gobject-introspection/gobject-introspection_1.78.1.bb:do_write_config) failed with exit code '1'
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (virtual:native:/home/testrdcr/build-autolinux/poky/meta/recipes-gnome/gobject-introspection/gobject-introspection_1.78.1.bb:do_write_config) failed with exit code '1'
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (/home/testrdcr/build-autolinux/poky/meta/recipes-core/systemd/systemd_255.4.bb:do_warn_musl) failed with exit code '1'
+ERROR: Task (virtual:native:/home/testrdcr/build-autolinux/poky/meta/recipes-graphics/xorg-proto/xorgproto_2023.2.bb:do_write_config) failed with exit code '1'
+ERROR: Task (virtual:native:/home/testrdcr/build-autolinux/poky/meta/recipes-core/glib-2.0/glib-2.0_2.78.6.bb:do_write_config) failed with exit code '1'
+ERROR: PermissionError: [Errno 1] Operation not permitted
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/testrdcr/build-autolinux/poky/bitbake/bin/bitbake-worker", line 278, in child
+    bb.utils.disable_network(uid, gid)
+  File "/home/testrdcr/build-autolinux/poky/bitbake/lib/bb/utils.py", line 1696, in disable_network
+    with open("/proc/self/uid_map", "w") as f:
+PermissionError: [Errno 1] Operation not permitted
+
+ERROR: Task (/home/testrdcr/build-autolinux/poky/meta/recipes-graphics/xorg-lib/pixman_0.42.2.bb:do_write_config) failed with exit code '1'
+NOTE: Tasks Summary: Attempted 25 tasks of which 16 didn't need to be rerun and 7 failed.
+NOTE: Writing buildhistory
+NOTE: Writing buildhistory took: 2 seconds
+
+Summary: 7 tasks failed:
+  /home/testrdcr/build-autolinux/poky/meta/recipes-core/glib-2.0/glib-2.0_2.78.6.bb:do_write_config
+  /home/testrdcr/build-autolinux/poky/meta/recipes-gnome/gobject-introspection/gobject-introspection_1.78.1.bb:do_write_config
+  virtual:native:/home/testrdcr/build-autolinux/poky/meta/recipes-gnome/gobject-introspection/gobject-introspection_1.78.1.bb:do_write_config
+  /home/testrdcr/build-autolinux/poky/meta/recipes-core/systemd/systemd_255.4.bb:do_warn_musl
+  virtual:native:/home/testrdcr/build-autolinux/poky/meta/recipes-graphics/xorg-proto/xorgproto_2023.2.bb:do_write_config
+  virtual:native:/home/testrdcr/build-autolinux/poky/meta/recipes-core/glib-2.0/glib-2.0_2.78.6.bb:do_write_config
+  /home/testrdcr/build-autolinux/poky/meta/recipes-graphics/xorg-lib/pixman_0.42.2.bb:do_write_config
+Summary: There was 1 WARNING message.
+Summary: There were 7 ERROR messages, returning a non-zero exit code.
+autolinux shutdown : build command failed
